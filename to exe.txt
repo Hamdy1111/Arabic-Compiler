@@ -1,0 +1,106 @@
+Since you're working in a Jupyter notebook, converting it into a standalone program that users can click to run requires a few additional steps. Here's how you can do it:
+
+### Steps to Create a Clickable Program from Jupyter Notebook
+
+1. **Convert Jupyter Notebook to Python Script**
+   
+   You first need to convert your Jupyter notebook to a Python script (`.py` file). You can do this in the Jupyter notebook itself by running the following command in a cell:
+   ```python
+   !jupyter nbconvert --to script your_notebook.ipynb
+   ```
+   This will create a `.py` file with the same name as the notebook. For example, if your notebook is `arabic_compiler.ipynb`, it will create `arabic_compiler.py`.
+
+2. **Create a Simple Python Program Using Tkinter**
+   
+   You need to modify the `.py` file to include the Tkinter GUI that allows user input and outputs the scanner and parser results, just like you did before. Make sure that the program is ready for standalone execution.
+
+   Here's a simple structure for your program, which uses Tkinter for the user interface.
+
+   ```python
+   import tkinter as tk
+   from tkinter import scrolledtext
+
+   # Include the rest of your logic (scanner, parser, etc.) here
+
+   class ArabicCompilerApp:
+       def __init__(self, root):
+           self.root = root
+           self.root.title("Arabic Compiler")
+           self.create_widgets()
+
+       def create_widgets(self):
+           # Input field for user statement
+           self.label = tk.Label(self.root, text="Enter your Arabic code:")
+           self.label.pack()
+
+           self.text_input = tk.Entry(self.root, width=50)
+           self.text_input.pack()
+
+           # Button to process the input
+           self.process_button = tk.Button(self.root, text="Process", command=self.process_input)
+           self.process_button.pack()
+
+           # Output field for scanner and parser results
+           self.output = scrolledtext.ScrolledText(self.root, width=80, height=20)
+           self.output.pack()
+
+       def process_input(self):
+           # Get the user input from the entry widget
+           user_input = self.text_input.get()
+
+           # Here, you should call your tokenize and parse methods
+           tokens = tokenize(user_input)  # Your scanner function
+           result = ""
+           for token in tokens:
+               result += str(token) + "\n"
+           # Call your parser as needed
+
+           # Display the result in the output field
+           self.output.delete(1.0, tk.END)  # Clear previous output
+           self.output.insert(tk.END, result)
+
+   # Setup the Tkinter window
+   root = tk.Tk()
+   app = ArabicCompilerApp(root)
+   root.mainloop()
+   ```
+
+3. **Create a Standalone Executable with PyInstaller**
+   
+   After you've converted your Jupyter notebook to a Python script and modified it to work as a standalone program with Tkinter, you can use **PyInstaller** to convert the script into a standalone executable.
+
+   Here’s how to do it:
+
+   1. **Install PyInstaller** (if you haven’t already):
+      ```bash
+      pip install pyinstaller
+      ```
+
+   2. **Generate the Executable**:
+      Open a terminal or command prompt, navigate to the directory where your Python script (`arabic_compiler.py`) is located, and run the following command:
+      ```bash
+      pyinstaller --onefile --noconsole arabic_compiler.py
+      ```
+
+      - `--onefile`: Packages everything into a single executable file.
+      - `--noconsole`: Hides the console window when the program runs (useful for GUI applications).
+
+   3. **Find the Executable**:
+      After running the PyInstaller command, it will create a `dist` directory where the `arabic_compiler.exe` (Windows) or a standalone app (macOS/Linux) will be saved.
+
+4. **Create a Desktop Shortcut** (Optional)
+
+   To make it even easier for the user to access:
+   - Right-click the `.exe` (Windows) or the app (macOS/Linux) and create a shortcut.
+   - You can place the shortcut on the desktop for easy access.
+
+---
+
+### Recap of Key Steps:
+
+- **Convert your Jupyter notebook to a Python script.**
+- **Modify the Python script** to use Tkinter for the GUI and include the scanner and parser logic.
+- **Use PyInstaller** to package the Python script into an executable that can be clicked and run.
+- **Create a desktop shortcut** for easy access.
+
+This process will give you a standalone program where the user can click to input their code and see the output.
